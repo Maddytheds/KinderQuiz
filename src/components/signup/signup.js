@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -8,12 +9,12 @@ export default function SignUp() {
     password: "",
   });
   const [error, setError] = useState("");
-
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     for (const field in formData) {
-      if (formData[field].trim() === '') {
+      if (formData[field].trim() === "") {
         setError(`Please fill in ${field}`);
         return;
       }
@@ -21,10 +22,21 @@ export default function SignUp() {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:8000/users", formData);
+      const response = await axios.post(
+        "http://localhost:8000/users",
+        formData
+      );
       console.log(response.data);
+      setFormData(
+        {
+          userName: "",
+          email: "",
+          password: "",
+        },
+        navigate("/login")
+      );
     } catch (error) {
-      console.error("Error:", error); 
+      console.error("Error:", error);
     }
   };
 
@@ -66,7 +78,7 @@ export default function SignUp() {
             }
           />
           <button>Create Account</button>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
         <a className="login-link" href="/login">
           Already have an account?
